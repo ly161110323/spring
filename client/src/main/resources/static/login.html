@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/layui/css/layui.css"  media="all">
+</head>
+<body>
+<div class="layui-container" style="width: 500px;height: 330px;margin-top: 130px;border: 1px solid #009688;padding-top: 60px;border-radius: 15px">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-inline">
+                <input id="loginAccount" type="text" name="account" lay-verify="account" autocomplete="off" placeholder="请输入用户名" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-inline">
+                <input id="loginPwd" type="password" name="pwd" lay-verify="pwd" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <button id="loginBtn" class="layui-btn" lay-submit="" lay-filter="login" style="margin-left: 160px;">登录</button>
+        </div>
+    </form>
+</div>
+<script src="/layui/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'layer'], function(){
+        var form = layui.form;
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        //自定义验证规则
+        form.verify({
+            account: function(value){
+                if(value.length == 0){
+                    return '用户名不能为空';
+                }
+            }
+            ,pwd: [/(.+){6,12}$/, '密码必须6到12位']
+        });
+
+        form.on('submit(login)', function(data) {
+            var loginAccount = $('#loginAccount').val();
+            var loginPassword = $('#loginPwd').val();
+            var params = {};
+            params.account = loginAccount;
+            params.pwd = loginPassword;
+            var loginLoadIndex = layer.load(2);
+            // console.log(params);
+            $('#loginBtn').val("正在登录...");
+
+            $.ajax({
+                type: 'post',
+                url: '/user/login',
+                dataType: 'json',
+                data: params,
+                success: function (data) {
+                    if (data.code != 0)
+                    {
+                        alert(data.msg);
+                    }
+                    else
+                    {
+                        window.location.href = "/user/redirect/main";
+                    }
+                },
+                complete: function () {
+                    layer.close(loginLoadIndex);
+                    $('#loginBtn').val("登录");
+                },
+                error: function () {
+                    alert("Error");
+                }
+            });
+            return false;
+        })
+    });
+</script>
+</body>
+</html>

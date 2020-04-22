@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ly.mapper.OrderMapper">
+    <resultMap id="OrderMap" type="com.ly.entity.Order">
+        <id property="orderId" column="order_id"></id>
+        <result property="userId" column="user_id"></result>
+        <result property="productId" column="product_id"></result>
+        <result property="units" column="units"></result>
+        <result property="price" column="price"></result>
+        <result property="time" column="time"></result>
+    </resultMap>
+
+    <resultMap id="OrderWithProductMap" type="com.ly.entity.OrderVo" extends="OrderMap">
+        <result property="brand" column="product_brand"></result>
+        <result property="name" column="product_name"></result>
+        <result property="specification" column="product_specification"></result>
+        <result property="category" column="category_name"></result>
+    </resultMap>
+
+    <resultMap id="RecordMap" type="com.ly.entity.Record" extends="OrderMap">
+        <result property="account" column="user_account"></result>
+        <result property="name" column="user_name"></result>
+        <result property="sex" column="user_sex"></result>
+        <result property="age" column="user_age"></result>
+        <result property="position" column="user_position"></result>
+    </resultMap>
+
+    <select id="getOrdersByCategory" resultType="com.ly.entity.ConsumptionDetails">
+        SELECT category_name AS category, product_brand AS brand, product_name AS name,product_specification AS specification, orders.product_id AS productId, sum(units) AS totalUnits, sum(price) AS totalPrice, sum(price)/sum(units) AS avgPrice
+        FROM orders, category, product
+        WHERE orders.product_id = product.product_id AND product.c_id = category.category_id
+        AND category_id = #{param1 } GROUP BY orders.product_id ORDER BY orders.product_id limit #{param2 }, #{param3 }
+    </select>
+
+    <select id="countConsumptionDetails" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM orders, category, product
+        WHERE orders.product_id = product.product_id AND product.c_id = category.category_id
+        AND category_id = #{param1 }
+    </select>
+
+    <select id="getPurchaseRecordsByUserId" resultMap="OrderWithProductMap">
+        SELECT * FROM orders, user, category, product WHERE orders.user_id = user.user_id
+        AND orders.product_id = product.product_id AND product.c_id = category.category_id
+        AND user.user_id = #{param1 } ORDER BY orders.time limit #{param2 },#{param3 }
+    </select>
+
+    <select id="countOrdersByUserId" resultType="int">
+        SELECT count(*) FROM orders, user, category, product WHERE orders.user_id = user.user_id
+        AND orders.product_id = product.product_id AND product.c_id = category.category_id
+        AND user.user_id = #{param }
+    </select>
+
+    <insert id="addOrder" parameterType="com.ly.entity.Order">
+        INSERT INTO orders VALUES (NULL , #{userId}, #{productId}, #{price}, #{time}, #{units})
+    </insert>
+
+    <select id="getRecordsByProductId" resultMap="RecordMap">
+        SELECT * FROM orders JOIN user ON orders.user_id = user.user_id
+        WHERE product_id = #{param1 } ORDER BY time LIMIT #{param2 }, #{param3 }
+    </select>
+
+    <delete id="deleteOrder" parameterType="int">
+        DELETE FROM orders WHERE order_id = #{VALUE }
+    </delete>
+
+    <select id="countRecords" resultType="int">
+        SELECT count(*) FROM orders JOIN user ON orders.user_id = user.user_id
+        WHERE product_id = #{param1 }
+    </select>
+</mapper>

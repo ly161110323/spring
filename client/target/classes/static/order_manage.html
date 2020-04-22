@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+</head>
+<body class="layui-layout-body">
+<div class="layui-container" style="margin-top: 50px">
+
+    <table class="layui-hide" id="test" style="width: 300px" lay-filter="test"></table>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    <script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+    <script>
+        layui.use('table', function(){
+            var table = layui.table;
+//            var id = '[[${session.user.id}]]';
+//            console.log(id);
+            table.render({
+                elem: '#test'
+                ,url:'/order/findOrdersById'
+                ,where: {userId: '[[${session.user.id}]]'}
+                ,title: '菜单列表'
+                ,cellMinWidth: 80
+                ,cols: [
+                    [
+                        {field:'category', align:'center', title: '类别'}
+                        ,{field:'brand', align:'center', title: '品牌'}
+                        ,{field:'name', align:'center', title:"名称"}
+                        ,{field:'units', align:'center', title: '数量'}
+                        ,{field:'price', align:'center', title: '总价格'}
+                        ,{field:'specification', align:'center', title: '规格'}
+                        ,{field: 'time', align:'center', title:'购买时间', templet: function (data) {
+                        return formatDate(data.time);
+                        }}
+                        ,{fixed:'right', align:'center', title:"工具栏", toolbar:'#barDemo'}
+                    ]
+                ]
+                ,page: true
+            });
+
+            function formatDate(str) {
+                return str.substring(0,10);
+            }
+
+            //监听行工具事件
+            table.on('tool(test)', function(obj){
+                var data = obj.data;
+                if(obj.event === 'del'){
+                    layer.confirm('确定要删除吗？', function(index){
+                        var $ = layui.jquery;
+                        $.ajax({
+                            type: 'get',
+                            url: '/order/deleteById',
+                            dataType: 'json',
+                            data: {orderId: data.orderId},
+                            success: function () {
+                                obj.del();
+                                layer.close(index);
+                            },
+                            error: function () {
+                                alert("Error");
+                            }
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+
+</div>
+<script>
+    //二级菜单联动
+    layui.use('element', function(){
+        var element = layui.element;
+
+    });
+</script>
+</body>
+</html>

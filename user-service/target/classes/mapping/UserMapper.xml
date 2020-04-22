@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ly.mapper.UserMapper">
+    <resultMap id="UserMap" type="com.ly.entity.User">
+        <id property="id" column="user_id"></id>
+        <result property="account" column="user_account"></result>
+        <result property="name" column="user_name"></result>
+        <result property="pwd" column="user_pwd"></result>
+        <result property="sex" column="user_sex"></result>
+        <result property="age" column="user_age"></result>
+        <result property="position" column="user_position"></result>
+        <result property="registerTime" column="user_register_time"></result>
+    </resultMap>
+
+    <select id="findAllUser" resultMap="UserMap">
+          select * from user order by user_id limit #{param1},#{param2}
+    </select>
+
+    <select id="countUser" resultType="int">
+        select count(*) from user
+    </select>
+
+    <insert id="addUser" parameterType="com.ly.entity.User">
+        insert into user(user_account, user_pwd, user_name, user_sex, user_age, user_position) values(#{account},#{pwd},#{name},#{sex},#{age},#{position})
+    </insert>
+
+    <delete id="deleteById" parameterType="int">
+        delete from user where user_id = #{id}
+    </delete>
+
+    <select id="getUserByAccount" parameterType="String" resultMap="UserMap">
+        select * from user where user_account = #{account}
+    </select>
+
+    <update id="updateUser" parameterType="com.ly.entity.User">
+        UPDATE user SET  user_pwd=#{pwd}, user_age=#{age}, user_name=#{name}, user_sex=#{sex} WHERE user_id = #{id}
+    </update>
+</mapper>

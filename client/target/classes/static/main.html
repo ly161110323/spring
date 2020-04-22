@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <script type="text/javascript" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#product_stats").click(function(){
+                $("iframe").attr("src","/user/redirect/product_stats");
+            });
+            $("#category_stats").click(function(){
+                $("iframe").attr("src","/user/redirect/category_stats");
+            });
+            $("#order_manage").click(function(){
+                $("iframe").attr("src","/user/redirect/order_manage");
+            });
+            $("#user_manage").click(function(){
+                $("iframe").attr("src","/user/redirect/user_manage");
+            });
+            $("#add_category").click(function(){
+                $("iframe").attr("src","/user/redirect/add_category");
+            });
+            $("#add_order").click(function(){
+                $("iframe").attr("src","/user/redirect/add_order");
+            });
+        })
+    </script>
+</head>
+
+<div class="layui-layout layui-layout-admin">
+    <body class="layui-layout-body">
+    <!-- 顶部菜单开始 -->
+    <div class="layui-header">
+        <div class="layui-logo">购物统计系统</div>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <span th:text="${session.user.name}"></span>
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/user/logout">退出系统</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 顶部菜单结束 -->
+
+    <!-- 左侧菜单开始 -->
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">用户管理</a>
+                    <dl class="layui-nav-child">
+                        <dd class="layui-this"><a id="user_manage" href="javascript:void(0)">员工列表</a></dd>
+                        <dd><a id="order_manage" href="javascript:void(0)">消费记录</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">商品管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a id="category_stats" href="javascript:void(0)">类别消费统计</a></dd>
+                        <dd><a id="product_stats" href="javascript:void(0)">商品消费统计</a></dd>
+                        <dd><a id="add_category" href="javascript:void(0)">添加类别</a></dd>
+                        <dd><a id="add_order" href="javascript:void(0)">添加消费记录</a></dd>
+
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- 左侧菜单结束 -->
+
+    <!-- 主体开始 -->
+    <div class="layui-body">
+
+        <iframe src="/user/redirect/user_manage" style="width: 100%;height: 100%;border: 0px"></iframe>
+
+    </div>
+    <!-- 主体结束 -->
+
+    </body>
+</div>
+<!-- 底部结束 -->
+<script>
+    //二级菜单联动
+    layui.use('element', function(){
+        var element = layui.element;
+
+    });
+</script>
+</html>

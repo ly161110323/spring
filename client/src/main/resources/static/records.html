@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+</head>
+<body class="layui-layout-body">
+<div class="layui-container" style="margin-top: 50px">
+
+    <table class="layui-hide" id="test" style="width: 300px" lay-filter="test"></table>
+
+    <script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+    <script>
+        layui.use(['table', 'form'], function(){
+            var table = layui.table;
+            var form = layui.form;
+            // console.log('[[${param.productId}]]');
+            table.render({
+                elem: '#test'
+                ,url:'/order/getRecords'
+                ,where: {productId: '[[${param.productId}]]'}
+                ,title: '商品消费统计'
+                ,cellMinWidth: 80
+                ,cols: [
+                    [
+                        {field:'time', align:'center', title: '时间', sort:true, templet: function (data) {
+                            return data.time.substring(0, 10);
+                        }}
+                        ,{field:'account', align:'center', title: '账号'}
+                        ,{field:'name', align:'center', title: '用户名'}
+                        ,{field:'sex', align:'center', title: '性别'}
+                        ,{field:'age', align:'center', title: '年龄'}
+                        ,{field:'position', align:'center', title: '职位'}
+                        ,{field:'units', align:'center', title:'购买数量'}
+                        ,{field:'price', align:'center', title:'总价格'}
+
+                    ]
+                ]
+                ,page: true
+            });
+
+
+        });
+    </script>
+
+</div>
+<script>
+    //二级菜单联动
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+</script>
+</body>
+</html>
